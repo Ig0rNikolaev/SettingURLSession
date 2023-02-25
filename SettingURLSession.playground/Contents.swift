@@ -18,22 +18,48 @@ class CreatureURL {
     }
 }
 
-class CreatureURLRequest {
+class CreatureMarvelURL: CreatureURL {
+    override func buildNbaURL() -> URL? {
+        <#code#>
+    }
+}
+
+final class CreatureURLRequest {
 
     func getData(urlRequest: URL?) {
         guard let url = urlRequest else { return }
         URLSession.shared.dataTask(with: url) { data, response, error in
             if error != nil {
+                print("Ошибка при запросе: \(String(describing: error?.localizedDescription))")
+            }
 
+            guard let response = response as? HTTPURLResponse else { return }
 
-
-            } else if let response = response as? HTTPURLResponse, response.statusCode == 200 {
+            switch response.statusCode {
+            case 100...103:
+                print("\(response.statusCode)")
+            case 200...299:
                 guard let data = data else { return }
                 let dataAsString = String(data: data, encoding: .utf8)
-
-
-                
+                print("Код ответа от сервера:\n \(response)\n Данные, пришедшие с сервера:\n \(String(describing: dataAsString))")
+            case 300...399:
+                print("\(response.statusCode)")
+            case 400...499:
+                print("\(response.statusCode)")
+            case 500...599:
+                print("\(response.statusCode)")
+            default:
+                break
             }
         }.resume()
     }
 }
+
+var urlNba = CreatureURL()
+var request = CreatureURLRequest()
+
+request.getData(urlRequest: urlNba.buildNbaURL())
+
+
+
+
